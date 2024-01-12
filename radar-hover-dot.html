@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar Chart with Tooltip</title>
+  <!-- 引入 ECharts 库 -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+</head>
+<body>
+
+<!-- 定义一个容器用于渲染图表 -->
+<div id="radarChart" style="width: 600px; height: 400px;"></div>
+
+<script>
+let index;
+document.addEventListener('DOMContentLoaded', function () {
+  // 假设一组数据
+  var data = [60, 80, 70, 95, 88];
+
+  // 初始化 ECharts 实例
+  var myChart = echarts.init(document.getElementById('radarChart'));
+
+  // 配置项
+  var option = {
+    tooltip: {
+      show: true,
+      trigger: 'item', // 设置触发类型为数据项触发
+      formatter: function (params) {
+        if (index != undefined) {
+          var value = params.value[index]; // 获取当前维度上的数据值
+          return '当前数值: ' + value;
+        }
+      },
+    },
+    radar: {
+      indicator: [
+        { name: 'Indicator 1' },
+        { name: 'Indicator 2' },
+        { name: 'Indicator 3' },
+        { name: 'Indicator 4' },
+        { name: 'Indicator 5' },
+      ],
+    },
+    series: [{
+      type: 'radar',
+      data: [
+        {
+          name: 'Series 1',
+          value: data,
+        },
+      ],
+    }],
+  };
+
+  myChart.setOption(option);
+
+  // 添加鼠标悬停事件监听
+  myChart.on('mouseover', function (params) {
+    // 判断事件类型是否为雷达图的数据项悬停
+    if (params.componentType === 'series' && params.seriesType === 'radar') {
+      var currentIndex = params.event.topTarget.__dimIdx;
+      index = currentIndex
+    }
+  });
+});
+</script>
+
+</body>
+</html>
